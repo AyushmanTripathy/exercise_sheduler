@@ -1,0 +1,122 @@
+<script>
+  const display = document.querySelector("#display");
+  const mainBar = document.querySelector("#main");
+  const secBar = document.querySelector("#sec");
+  const sequence = JSON.parse(localStorage.getItem("exe"));
+  let paused = true,
+    index = 0,
+    mainCounter = 0,
+    secCounter = 0;
+
+  let totalDuration = 0;
+  for (const exe of sequence) totalDuration += exe.duration;
+
+  console.log(sequence);
+
+  const format = (i) => sequence[i].name + " " + sequence[i].duration + "s";
+  const progress = (x, y) => 100 * (x / y) + "%";
+  const ping = new Audio("ping.mp3");
+
+  window.onload = init();
+  function init() {
+    render(format(0), format(1));
+    const id = window.setInterval(() => {
+      if (!paused) {
+        mainCounter++;
+        secCounter++;
+        mainBar.style.width = progress(mainCounter, totalDuration);
+        secBar.style.width = progress(secCounter, sequence[index].duration);
+
+        if (index >= sequence.length) {
+          clearInterval(id);
+          return render("End", "Workout Complete");
+        }
+        if (secCounter >= sequence[index].duration - 2) {
+          ping.play();
+          display.childNodes[0].style.color = "#047dffcb";
+        }
+        if (secCounter >= sequence[index].duration) {
+          secCounter = 0;
+          index++;
+          if (index < sequence.length - 1) {
+            render(format(index), format(index + 1));
+          } else {
+            render(format(index), "End");
+          }
+        }
+      }
+    }, 1000);
+  }
+
+  function render(a, b) {
+    display.childNodes[0].innerHTML = a;
+    display.childNodes[1].innerHTML = b;
+    display.childNodes[0].style.color = "#fff";
+  }
+  function handleClick(srcElement) {
+    if (paused) {
+      paused = false;
+      srcElement.innerHTML = "Pause";
+    } else {
+      paused = true;
+      srcElement.innerHTML = "Play";
+    }
+  }
+</script>
+
+<main>
+  <div id="progressbar">
+    <div class="bar" id="sec"></div>
+    <div class="bar" id="main"></div>
+  </div>
+  <section id="display">
+    <h1>Exercise</h1>
+    <h2>Duration</h2>
+    <button onClick="handleClick(this)">Start</button>
+  </section>
+</main>
+
+<style>
+  main {
+    @include absolute;
+    @include fullscreen;
+    @include flex(column);
+    @include flex-center;
+    @include sans;
+
+    background-color: $pri;
+  }
+  section {
+    @include section(fit-content, 90vw);
+    max-width: 800px;
+    text-align: left;
+  }
+  button {
+    @include section(50px, 30%);
+    background: transparent;
+    border: 3px solid $light;
+    border-radius: 10px;
+    font-color: $light;
+
+    &:hover {
+      border-color: $blue;
+    }
+  }
+  #progressbar {
+    @include absolute;
+    @include section(7vh, 100vw);
+    @include flex(column);
+    justify-content: center;
+    align-items: left;
+  }
+  .bar {
+    @include section(100%, 0%);
+    background-color: $red;
+  }
+  #main {
+    background-color: $blue;
+  }
+  h1 {
+    font-size: 10vh;
+  }
+</style>
