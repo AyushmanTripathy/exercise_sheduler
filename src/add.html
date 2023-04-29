@@ -1,0 +1,99 @@
+<script>
+  const inputSection = document.querySelector("#inputSection");
+
+  let list = localStorage.getItem("list");
+  if (list) list = JSON.parse(list);
+  else {
+    localStorage.setItem("list", JSON.stringify([]));
+    list = [];
+  }
+
+  for (const item of list) console.log(item);
+
+  let index = 0;
+  const id = (x) => "id" + x;
+  function addInputFeilds() {
+    const create = () => {
+      const input = document.createElement("input");
+      index++;
+      input.id = id(index);
+      return input;
+    };
+    inputSection.appendChild(create());
+    inputSection.appendChild(create());
+    console.log(inputSection);
+  }
+  function saveInput() {
+    const sequence = [];
+    for(let i = 1; i <= index; i++) {
+      const name = document.getElementById(id(i)).value;
+      i++;
+      const duration = document.getElementById(id(i)).value;
+      sequence.push({ name, duration });
+    }
+    const label = document.getElementById("workOutName").value;
+    list.push({ label,sequence });
+    localStorage.setItem("list", JSON.stringify(list))
+  }
+  window.onload = addInputFeilds;
+</script>
+
+<main>
+  <section>
+    <div id="nameSection">
+      <p>Work Out Name: </p>
+      <input type="text" id="workOutName">
+    </div>
+    <div id="inputSection">
+      <p>Exercise name</p>
+      <p>Duration</p>
+    </div>
+    <div id="buttonSection">
+      <button onClick="addInputFeilds()">Add Exercise</button>
+      <button onClick="saveInput()">Save Workout</button>
+    </div>
+  </section>
+</main>
+
+<style>
+  main {
+    @include absolute;
+    @include fullscreen;
+    @include flex(column);
+    @include flex-center;
+    @include sans;
+
+    background-color: $pri;
+  }
+  section {
+    @include section(fit-content, 95vw);
+    @include flex(column);
+    @include flex-center;
+    gap: 20px;
+    max-width: 600px;
+  }
+  #nameSection {
+    @include grid(1fr 1fr, 1fr);
+  }
+  #inputSection {
+    @include grid(3fr 1fr, 1fr);
+    column-gap: 10px;
+    row-gap: 10px;
+  }
+  #buttonSection {
+    @include section(fit-content, 70vw);
+    @include grid(1fr 1fr, 1fr);
+    column-gap: 5%;
+  }
+  button {
+    @include shadow;
+    @include section(20px, 30vw);
+    border: 1px solid $light;
+    border-radius: 5px;
+    background-color: transparent;
+    color: $light;
+  }
+  input:focus {
+    outline: none;
+  }
+</style>

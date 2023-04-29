@@ -1,25 +1,28 @@
 <script>
-  const display = document.querySelector("#display");
-  const mainBar = document.querySelector("#main");
-  const secBar = document.querySelector("#sec");
-  const sequence = JSON.parse(localStorage.getItem("exe"));
   let paused = true,
     index = 0,
     mainCounter = 0,
     secCounter = 0;
 
-  let totalDuration = 0;
-  for (const exe of sequence) totalDuration += exe.duration;
-
-  console.log(sequence);
-
-  const format = (i) => sequence[i].name + " " + sequence[i].duration + "s";
+  const format = (i) => {
+    sequence[i].name + " " + sequence[i].duration + "s";
+  }
   const progress = (x, y) => 100 * (x / y) + "%";
   const ping = new Audio("ping.mp3");
 
-  window.onload = init();
+  window.onload = init;
   function init() {
-    render(format(0), format(1));
+    window.display = document.querySelector("#display");
+    window.mainBar = document.querySelector("#main");
+    window.secBar = document.querySelector("#sec");
+    window.sequence = JSON.parse(localStorage.getItem("list"))[0].sequence;
+
+    let totalDuration = 0;
+    for (const exe of sequence) totalDuration += exe.duration;
+
+    console.log(sequence);
+    //render(format(0), format(1));
+    render("lol","op")
     const id = window.setInterval(() => {
       if (!paused) {
         mainCounter++;
@@ -64,7 +67,7 @@
   }
 </script>
 
-<main>
+<main id="sheduler">
   <div id="progressbar">
     <div class="bar" id="sec"></div>
     <div class="bar" id="main"></div>

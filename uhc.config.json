@@ -7,7 +7,7 @@
   "css": {
     "autoprefix": true,
     "prefix": "@import \"./global.scss\";",
-    "sass": true 
+    "sass": true
   },
   "vars": {
     "foo": "bar"
